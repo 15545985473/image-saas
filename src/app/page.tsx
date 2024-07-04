@@ -1,10 +1,22 @@
-import Image from "next/image";
+'use client'
+import { useState } from 'react';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { Textarea } from "@/components/Textarea";
-import { UserInfo, SessionProvider } from "./UserInfo";
+import { trpcClient } from '@/utils/api';
+import { useEffect } from 'react';
 
-export default async function Home() {
+export default function Home() {
+  const [state, setState] = useState('');
+
+  useEffect(() => {
+    (async () => {
+      const res = await trpcClient.hello.query();
+      console.log(res, '=======')
+      setState(res.hello)
+    })()
+  }, []);
+
   return <div className="h-screen flex justify-center items-center">
     <form className="w-full max-w-xl flex flex-col gap-4">
       <h1 className="text-center text-2xl font-bold">Create App</h1>
@@ -12,8 +24,6 @@ export default async function Home() {
       <Textarea name="description" placeholder="Description" />
       <Button type="submit">Submit</Button>
     </form>
-    <SessionProvider>
-      <UserInfo />
-    </SessionProvider>
+    {state}
   </div>
 }
