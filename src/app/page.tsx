@@ -3,19 +3,11 @@ import { useState } from 'react';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { Textarea } from "@/components/Textarea";
-import { trpcClient } from '@/utils/api';
-import { useEffect } from 'react';
+import { trpcClientReact } from '@/utils/api';
 
-export default function Home() {
-  const [state, setState] = useState('');
-
-  useEffect(() => {
-    (async () => {
-      const res = await trpcClient.hello.query();
-      console.log(res, '=======')
-      setState(res.hello)
-    })()
-  }, []);
+export default function Home() {  
+  const res = trpcClientReact.hello.useQuery();
+  console.log(res, trpcClientReact.hello, Object.keys(trpcClientReact.hello),'=======')
 
   return <div className="h-screen flex justify-center items-center">
     <form className="w-full max-w-xl flex flex-col gap-4">
@@ -24,6 +16,6 @@ export default function Home() {
       <Textarea name="description" placeholder="Description" />
       <Button type="submit">Submit</Button>
     </form>
-    {state}
+    {res.data?.name}
   </div>
 }
